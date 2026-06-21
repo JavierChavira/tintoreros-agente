@@ -9,7 +9,7 @@ load_dotenv()
 logger = logging.getLogger("agentkit")
 
 client = AsyncAnthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-MODELO = "claude-sonnet-4-6"
+MODELO = "claude-haiku-4-5"
 
 
 def cargar_config_prompts() -> dict:
