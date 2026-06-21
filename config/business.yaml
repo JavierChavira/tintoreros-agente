@@ -1,0 +1,40 @@
+# Configuración del negocio — Generado por AgentKit
+negocio:
+  nombre: "Tintoreros - Tintorería y Limpiaduría"
+  descripcion: >
+    Servicio especializado en el cuidado textil meticuloso y delicado de las prendas.
+    Atendemos a profesionistas y familias que valoran y entienden el costo de su ropa,
+    priorizando la confianza, el buen trato y la tranquilidad de saber que sus prendas
+    están en manos expertas.
+  horario: "Lunes a Viernes 9am-6pm | Sábados y Festivos 9am-3pm | Domingos cerrado"
+  horario_entrega: "Lunes a Viernes hasta las 5:00pm | Sábados hasta las 2:00pm"
+  sucursales: 1
+  servicio_a_domicilio: false
+
+agente:
+  nombre: "Brenda"
+  tono: "Amigable y empático"
+  casos_de_uso:
+    - "Responder preguntas frecuentes (servicios, precios, horarios, políticas)"
+    - "Tomar pedidos y registrar órdenes de servicio"
+    - "Enviar recordatorios y ofertas promocionales"
+    - "Generar y enviar tickets o acuerdos de pago"
+
+servicios:
+  - nombre: "Tintorería"
+    descripcion: "Lavado en seco especializado para prendas delicadas o de cuidado especial"
+  - nombre: "Planchado"
+    descripcion: "Acabado impecable para clientes que lavan en casa"
+  - nombre: "Costura"
+    descripcion: "Composturas, bastillas, botones, zippers y ajustes de prendas"
+
+restricciones:
+  - "No se trabaja con prendas de piel"
+  - "No se realizan confecciones (solo composturas)"
+  - "Para costura se requieren medidas marcadas o muestra"
+
+metadata:
+  creado: "2026-06-21"
+  version: "1.0"
+  ia: "Google Gemini (gemini-2.0-flash)"
+  proveedor_whatsapp: "Twilio"
