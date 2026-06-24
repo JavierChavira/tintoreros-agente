@@ -55,24 +55,38 @@ async def webhook_handler(request: Request):
     """Recibe mensajes de WhatsApp, genera respuesta con Gemini y la envía."""
     try:
         mensajes = await proveedor.parsear_webhook(request)
+    except Exception as e:
+        logger.error(f"Error al parsear webhook: {e}")
+        return {"status": "ok"}  # Siempre 200 para que Twilio/Meta no reintente
 
-        for msg in mensajes:
-            if msg.es_propio or not msg.texto:
-                continue
+    for msg in mensajes:
+        if msg.es_propio or not msg.texto:
+            continue
 
-            logger.info(f"Mensaje de {msg.telefono}: {msg.texto}")
+        logger.info(f"Mensaje de {msg.telefono}: {msg.texto}")
 
+        try:
             historial = await obtener_historial(msg.telefono)
             respuesta = await generar_respuesta(msg.texto, historial)
 
             await guardar_mensaje(msg.telefono, "user", msg.texto)
             await guardar_mensaje(msg.telefono, "assistant", respuesta)
 
-            await proveedor.enviar_mensaje(msg.telefono, respuesta)
-            logger.info(f"Respuesta enviada a {msg.telefono}")
+            enviado = await proveedor.enviar_mensaje(msg.telefono, respuesta)
+            if enviado:
+                logger.info(f"Respuesta enviada a {msg.telefono}")
+            else:
+                logger.error(f"Fallo al enviar respuesta a {msg.telefono}")
 
-        return {"status": "ok"}
+        except Exception as e:
+            logger.error(f"Error procesando mensaje de {msg.telefono}: {e}")
+            # Intenta enviar mensaje de error al usuario para que no quede en silencio
+            try:
+                await proveedor.enviar_mensaje(
+                    msg.telefono,
+                    "Lo siento, tuve un problema técnico. Por favor intenta de nuevo en un momento."
+                )
+            except Exception:
+                pass
 
-    except Exception as e:
-        logger.error(f"Error en webhook: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+    return {"status": "ok"}

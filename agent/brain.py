@@ -61,11 +61,16 @@ async def generar_respuesta(mensaje: str, historial: list[dict]) -> str:
     try:
         response = await client.messages.create(
             model=MODELO,
-            max_tokens=1024,
+            max_tokens=512,
             system=system_prompt,
             messages=mensajes,
         )
-        respuesta = response.content[0].text
+        # Buscar el primer bloque de texto (evita error si Claude devuelve bloque vacío o inesperado)
+        bloques_texto = [b.text for b in response.content if hasattr(b, "text")]
+        if not bloques_texto:
+            logger.warning("Claude devolvió respuesta sin bloques de texto")
+            return obtener_mensaje_fallback()
+        respuesta = bloques_texto[0]
         logger.info(f"Respuesta generada ({response.usage.input_tokens} in / {response.usage.output_tokens} out)")
         return respuesta
 
